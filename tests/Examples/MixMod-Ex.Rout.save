@@ -1,0 +1,964 @@
+
+R version 2.14.1 (2011-12-22)
+Copyright (C) 2011 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: i386-pc-mingw32/i386 (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "MixMod"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> options(pager = "console")
+> library('MixMod')
+Warning: replacing previous import 'VarCorr' when loading 'lme4'
+Warning: replacing previous import 'lmList' when loading 'lme4'
+> 
+> assign(".oldSearch", search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("MixMod-package")
+> ### * MixMod-package
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MixMod-package
+> ### Title: Analysis of Mixed Effect Models
+> ### Aliases: MixMod-package MixMod
+> 
+> ### ** Examples
+> 
+> options(contrasts=c(unordered="contr.SAS", ordered="contr.poly"))
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> data(ham)
+> m<-lmer(Informed.liking ~ Kjonn*Information*Product +(1|Consumer), data=ham)
+> totalAnalysis(m, ham,isRandReduce=TRUE, isFixReduce=TRUE)
+Call:
+lmer(formula = Informed.liking ~ Kjonn + Information + Product + 
+    (1 | Consumer) + Kjonn:Information + Kjonn:Product + Information:Product + 
+    Kjonn:Information:Product, data = data)
+
+Random effects:
+               Chi.sq Chi.DF elim.num p.value    
+(1 | Consumer)   36.1      1        0   2e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+                          NumDF DenDF F.value elim.num p.value    
+Kjonn                         1    79    0.88        5     0.4    
+Information                   1   563    1.49        6     0.2    
+Product                       3   564    6.99        0   1e-04 ***
+Kjonn:Information             1   559    0.32        3     0.6    
+Kjonn:Product                 3   556    0.64        2     0.6    
+Information:Product           3   560    0.79        4     0.5    
+Kjonn:Information:Product     3   553    0.45        1     0.7    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+           Product Estimate Standard Error  DF t-value Lower CI Upper CI
+Product  1       1    5.809          0.193 321  30.110     5.43     6.19
+Product  2       2    5.105          0.193 321  26.460     4.73     5.48
+Product  3       3    6.093          0.193 321  31.580     5.71     6.47
+Product  4       4    5.926          0.193 321  30.720     5.55     6.31
+           p-value    
+Product  1  <2e-16 ***
+Product  2  <2e-16 ***
+Product  3  <2e-16 ***
+Product  4  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Informed.liking ~ Product + (1 | Consumer), data = data)
+> 
+> data(TVbo)
+> library(lme4)
+> m<-lmer(Cutting ~ TVset*Picture+(1|Assessor)
++ + (1|Assessor:Picture) + (1|Assessor:TVset), data=TVbo)
+> totalAnalysis(m, TVbo, test.effs="TVset", isFixReduce=TRUE, isRandReduce=TRUE)
+Call:
+lmer(formula = Cutting ~ TVset + Picture + (1 | Assessor) + (1 | 
+    Assessor:Picture) + (1 | Assessor:TVset) + TVset:Picture, 
+    data = data)
+
+Random effects:
+                       Chi.sq Chi.DF elim.num p.value    
+(1 | Assessor)         17.415      1        0   3e-05 ***
+(1 | Assessor:Picture)  0.342      1        1     0.6    
+(1 | Assessor:TVset)   33.961      1        0   6e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+              NumDF DenDF F.value elim.num p.value    
+TVset             2    14   20.01        0   1e-04 ***
+Picture           3   159    3.68        0    0.01 *  
+TVset:Picture     6   159    4.44        0   3e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+           TVset Picture Estimate Standard Error  DF t-value Lower CI Upper CI
+TVset  TV1   1.0      NA    7.534          0.826 9.3    9.13     5.68     9.39
+TVset  TV2   2.0      NA    6.452          0.826 9.3    7.81     4.59     8.31
+TVset  TV3   3.0      NA    4.219          0.826 9.3    5.11     2.36     6.08
+           p-value    
+TVset  TV1  <2e-16 ***
+TVset  TV2  <2e-16 ***
+TVset  TV3   6e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Cutting ~ TVset + Picture + (1 | Assessor) + (1 | 
+    Assessor:TVset) + TVset:Picture, data = data)
+> anovaTAB(m, TVbo)
+Analysis of Variance Table:
+              NumDF DenDF F.value p.value    
+TVset             2    14   20.01   1e-04 ***
+Picture           3    21    2.87    0.06 .  
+TVset:Picture     6   138    4.64   3e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> randTAB(m, TVbo)
+Analysis of Random effects Table:
+                       Chi.sq Chi.DF elim.num p.value    
+(1 | Assessor)         17.302      1        0   3e-05 ***
+(1 | Assessor:Picture)  0.342      1        0     0.6    
+(1 | Assessor:TVset)   34.304      1        0   5e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> lsmeansTAB(m, TVbo, plot=TRUE)
+Least Squares Means table:
+                     TVset Picture Estimate Standard Error   DF t-value
+TVset  TV1             1.0      NA    7.534          0.826  9.3    9.13
+TVset  TV2             2.0      NA    6.452          0.826  9.3    7.81
+TVset  TV3             3.0      NA    4.219          0.826  9.3    5.11
+Picture  1              NA     1.0    5.952          0.785  7.7    7.58
+Picture  2              NA     2.0    6.554          0.785  7.7    8.35
+Picture  3              NA     3.0    5.758          0.785  7.7    7.33
+Picture  4              NA     4.0    6.008          0.785  7.7    7.65
+TVset:Picture  TV1 1   1.0     1.0    6.944          0.870 11.5    7.98
+TVset:Picture  TV2 1   2.0     1.0    6.556          0.870 11.5    7.53
+TVset:Picture  TV3 1   3.0     1.0    4.356          0.870 11.5    5.01
+TVset:Picture  TV1 2   1.0     2.0    8.719          0.870 11.5   10.02
+TVset:Picture  TV2 2   2.0     2.0    6.669          0.870 11.5    7.66
+TVset:Picture  TV3 2   3.0     2.0    4.275          0.870 11.5    4.91
+TVset:Picture  TV1 3   1.0     3.0    7.631          0.870 11.5    8.77
+TVset:Picture  TV2 3   2.0     3.0    5.519          0.870 11.5    6.34
+TVset:Picture  TV3 3   3.0     3.0    4.125          0.870 11.5    4.74
+TVset:Picture  TV1 4   1.0     4.0    6.844          0.870 11.5    7.86
+TVset:Picture  TV2 4   2.0     4.0    7.062          0.870 11.5    8.11
+TVset:Picture  TV3 4   3.0     4.0    4.119          0.870 11.5    4.73
+                     Lower CI Upper CI p-value    
+TVset  TV1               5.68     9.39  <2e-16 ***
+TVset  TV2               4.59     8.31  <2e-16 ***
+TVset  TV3               2.36     6.08   6e-04 ***
+Picture  1               4.13     7.77   1e-04 ***
+Picture  2               4.73     8.38  <2e-16 ***
+Picture  3               3.94     7.58   1e-04 ***
+Picture  4               4.19     7.83   1e-04 ***
+TVset:Picture  TV1 1     5.04     8.85  <2e-16 ***
+TVset:Picture  TV2 1     4.65     8.46  <2e-16 ***
+TVset:Picture  TV3 1     2.45     6.26   3e-04 ***
+TVset:Picture  TV1 2     6.81    10.62  <2e-16 ***
+TVset:Picture  TV2 2     4.76     8.57  <2e-16 ***
+TVset:Picture  TV3 2     2.37     6.18   4e-04 ***
+TVset:Picture  TV1 3     5.73     9.54  <2e-16 ***
+TVset:Picture  TV2 3     3.61     7.42  <2e-16 ***
+TVset:Picture  TV3 3     2.22     6.03   5e-04 ***
+TVset:Picture  TV1 4     4.94     8.75  <2e-16 ***
+TVset:Picture  TV2 4     5.16     8.97  <2e-16 ***
+TVset:Picture  TV3 4     2.21     6.02   5e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> 
+> library(lme4)
+> data(carrots)
+> m2<-lmer(Preference~sens2+sens1+BITTER+Homesize+
++ sens2:Homesize+(1+sens2|Consumer), data=carrots)
+> randTAB(m2, carrots)
+Analysis of Random effects Table:
+                       Chi.sq Chi.DF elim.num p.value
+(1 + sens2 | Consumer) 0.0877      1        0     0.8
+> an<-anovaTAB(m2, carrots)
+> totalAnalysis(m2, carrots, isRandReduce=TRUE, isFixReduce=TRUE)
+Call:
+lmer(formula = Preference ~ sens2 + sens1 + BITTER + Homesize + 
+    (1 + sens2 | Consumer) + sens2:Homesize, data = data)
+
+Random effects:
+                               Chi.sq Chi.DF elim.num p.value    
+(1 + sens2 | Consumer)         0.0877      1        1     0.8    
+      (sens2 + 0 | Consumer)   1.6691      1        2     0.2    
+      (1 | Consumer)         109.0211      1        0  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+                NumDF  DenDF F.value elim.num p.value    
+sens2             1.0 1122.6   92.54        0  <2e-16 ***
+sens1             1.0 1121.8    7.70        0   0.006 ** 
+BITTER            6.0 1197.4   65.76        0  <2e-16 ***
+Homesize          1.0   99.4    3.36        2   0.070 .  
+sens2:Homesize    1.0 1119.7    1.32        1   0.251    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+          BITTER Estimate Standard Error   DF  t-value Lower CI Upper CI
+BITTER  1      1 5.31e+00       6.88e-02  268 7.72e+01    5.173     5.44
+BITTER  2      2 5.03e+00       6.31e-02  224 7.98e+01    4.907     5.16
+BITTER  3      3 4.49e+00       7.62e-02  400 5.89e+01    4.337     4.64
+BITTER  4      4 4.07e+00       1.08e-01  887 3.78e+01    3.862     4.28
+BITTER  5      5 3.46e+00       1.20e-01  990 2.88e+01    3.228     3.70
+BITTER  6      6 2.98e+00       2.18e-01 1223 1.37e+01    2.555     3.41
+BITTER  7      7 5.18e-01       6.68e-01 1180 7.70e-01   -0.794     1.83
+          p-value    
+BITTER  1  <2e-16 ***
+BITTER  2  <2e-16 ***
+BITTER  3  <2e-16 ***
+BITTER  4  <2e-16 ***
+BITTER  5  <2e-16 ***
+BITTER  6  <2e-16 ***
+BITTER  7     0.4    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Preference ~ sens2 + sens1 + BITTER + (1 | Consumer), 
+    data = data)
+> 
+> 
+> 
+> 
+> options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("TVbo")
+> ### * TVbo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: TVbo
+> ### Title: TV dataset
+> ### Aliases: TVbo
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> 
+> data(TVbo)
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> library(MixMod)
+> 
+> m<-lmer(Cutting ~ TVset*Picture+(1|Assessor)
++ + (1|Assessor:Picture) + (1|Assessor:TVset), data=TVbo)
+> totalAnalysis(m, TVbo, test.effs="TVset", isFixReduce=TRUE, isRandReduce=TRUE)
+Call:
+lmer(formula = Cutting ~ TVset + Picture + (1 | Assessor) + (1 | 
+    Assessor:Picture) + (1 | Assessor:TVset) + TVset:Picture, 
+    data = data)
+
+Random effects:
+                       Chi.sq Chi.DF elim.num p.value    
+(1 | Assessor)         17.415      1        0   3e-05 ***
+(1 | Assessor:Picture)  0.342      1        1     0.6    
+(1 | Assessor:TVset)   33.961      1        0   6e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+              NumDF DenDF F.value elim.num p.value    
+TVset             2    14   20.01        0   1e-04 ***
+Picture           3   159    3.68        0    0.01 *  
+TVset:Picture     6   159    4.44        0   3e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+           TVset Picture Estimate Standard Error  DF t-value Lower CI Upper CI
+TVset  TV1   1.0      NA    7.534          0.826 9.3    9.13     5.68     9.39
+TVset  TV2   2.0      NA    6.452          0.826 9.3    7.81     4.59     8.31
+TVset  TV3   3.0      NA    4.219          0.826 9.3    5.11     2.36     6.08
+           p-value    
+TVset  TV1  <2e-16 ***
+TVset  TV2  <2e-16 ***
+TVset  TV3   6e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Cutting ~ TVset + Picture + (1 | Assessor) + (1 | 
+    Assessor:TVset) + TVset:Picture, data = data)
+> anovaTAB(m, TVbo)
+Analysis of Variance Table:
+              NumDF DenDF F.value p.value    
+TVset             2    14   20.01   1e-04 ***
+Picture           3    21    2.87    0.06 .  
+TVset:Picture     6   138    4.64   3e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> randTAB(m, TVbo)
+Analysis of Random effects Table:
+                       Chi.sq Chi.DF elim.num p.value    
+(1 | Assessor)         17.302      1        0   3e-05 ***
+(1 | Assessor:Picture)  0.342      1        0     0.6    
+(1 | Assessor:TVset)   34.304      1        0   5e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> lsmeansTAB(m, TVbo, plot=TRUE)
+Least Squares Means table:
+                     TVset Picture Estimate Standard Error   DF t-value
+TVset  TV1             1.0      NA    7.534          0.826  9.3    9.13
+TVset  TV2             2.0      NA    6.452          0.826  9.3    7.81
+TVset  TV3             3.0      NA    4.219          0.826  9.3    5.11
+Picture  1              NA     1.0    5.952          0.785  7.7    7.58
+Picture  2              NA     2.0    6.554          0.785  7.7    8.35
+Picture  3              NA     3.0    5.758          0.785  7.7    7.33
+Picture  4              NA     4.0    6.008          0.785  7.7    7.65
+TVset:Picture  TV1 1   1.0     1.0    6.944          0.870 11.5    7.98
+TVset:Picture  TV2 1   2.0     1.0    6.556          0.870 11.5    7.53
+TVset:Picture  TV3 1   3.0     1.0    4.356          0.870 11.5    5.01
+TVset:Picture  TV1 2   1.0     2.0    8.719          0.870 11.5   10.02
+TVset:Picture  TV2 2   2.0     2.0    6.669          0.870 11.5    7.66
+TVset:Picture  TV3 2   3.0     2.0    4.275          0.870 11.5    4.91
+TVset:Picture  TV1 3   1.0     3.0    7.631          0.870 11.5    8.77
+TVset:Picture  TV2 3   2.0     3.0    5.519          0.870 11.5    6.34
+TVset:Picture  TV3 3   3.0     3.0    4.125          0.870 11.5    4.74
+TVset:Picture  TV1 4   1.0     4.0    6.844          0.870 11.5    7.86
+TVset:Picture  TV2 4   2.0     4.0    7.062          0.870 11.5    8.11
+TVset:Picture  TV3 4   3.0     4.0    4.119          0.870 11.5    4.73
+                     Lower CI Upper CI p-value    
+TVset  TV1               5.68     9.39  <2e-16 ***
+TVset  TV2               4.59     8.31  <2e-16 ***
+TVset  TV3               2.36     6.08   6e-04 ***
+Picture  1               4.13     7.77   1e-04 ***
+Picture  2               4.73     8.38  <2e-16 ***
+Picture  3               3.94     7.58   1e-04 ***
+Picture  4               4.19     7.83   1e-04 ***
+TVset:Picture  TV1 1     5.04     8.85  <2e-16 ***
+TVset:Picture  TV2 1     4.65     8.46  <2e-16 ***
+TVset:Picture  TV3 1     2.45     6.26   3e-04 ***
+TVset:Picture  TV1 2     6.81    10.62  <2e-16 ***
+TVset:Picture  TV2 2     4.76     8.57  <2e-16 ***
+TVset:Picture  TV3 2     2.37     6.18   4e-04 ***
+TVset:Picture  TV1 3     5.73     9.54  <2e-16 ***
+TVset:Picture  TV2 3     3.61     7.42  <2e-16 ***
+TVset:Picture  TV3 3     2.22     6.03   5e-04 ***
+TVset:Picture  TV1 4     4.94     8.75  <2e-16 ***
+TVset:Picture  TV2 4     5.16     8.97  <2e-16 ***
+TVset:Picture  TV3 4     2.21     6.02   5e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> 
+> 
+> 
+> 
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("anovaTAB")
+> ### * anovaTAB
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: anovaTAB
+> ### Title: Calculates Analysis of Variance Table for mixed model of object
+> ###   of class lmer.
+> ### Aliases: anovaTAB
+> 
+> ### ** Examples
+> 
+> 
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> data(ham)
+> m1<-lmer(Informed.liking ~ Kjonn*Information*Product + (1|Product:Consumer) + 
++ (1|Information:Consumer) + (1|Consumer), data=ham)
+> # anova table of lme4 package
+> anova(m1)
+Analysis of Variance Table
+                          Df  Sum Sq Mean Sq F value
+Kjonn                      1  1.3781  1.3781  0.8792
+Information                1  5.2190  5.2190  3.3296
+Product                    3 17.8571  5.9524  3.7974
+Kjonn:Information          1  1.1266  1.1266  0.7187
+Kjonn:Product              3  1.6380  0.5460  0.3483
+Information:Product        3 10.3873  3.4624  2.2089
+Kjonn:Information:Product  3  5.9915  1.9972  1.2741
+> # anova table produced by MixMod package
+> anovaTAB(m1, ham)
+Warning in mer_finalize(ans) : singular convergence (7)
+Analysis of Variance Table:
+                          NumDF DenDF F.value p.value  
+Kjonn                         1    79    0.88    0.35  
+Information                   1    79    3.29    0.07 .
+Product                       3   237    3.82    0.01 *
+Kjonn:Information             1    79    0.72    0.40  
+Kjonn:Product                 3   237    0.35    0.79  
+Information:Product           3   237    2.22    0.09 .
+Kjonn:Information:Product     3   237    1.27    0.28  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> 
+> 
+> 
+> 
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("carrots")
+> ### * carrots
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: carrots
+> ### Title: Consumer preference mapping of carrots
+> ### Aliases: carrots
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> 
+> data(carrots)
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> library(MixMod)
+> 
+> m<-lmer(Preference ~ sens1+sens2+Homesize + Homesize:sens1+Homesize:sens2
++ +(1+sens1+sens2|Consumer), data=carrots)
+> 
+> #total analysis with 
+> #automatic elimination of the random and fixed parts
+> totalAnalysis(m, carrots, isRandReduce=TRUE, isFixReduce=TRUE)
+Call:
+lmer(formula = Preference ~ sens1 + sens2 + Homesize + (1 + sens1 + 
+    sens2 | Consumer) + sens1:Homesize + sens2:Homesize, data = data)
+
+Random effects:
+                                     Chi.sq Chi.DF elim.num p.value    
+(1 + sens1 + sens2 | Consumer)         0.00      2        1    1.00    
+      (sens1 + sens2 + 0 | Consumer)   1.62      1        2    0.20    
+            (sens1 + 0 | Consumer)     0.00      1        3    1.00    
+            (sens2 + 0 | Consumer)     5.70      1        0    0.02 *  
+      (1 | Consumer)                  82.91      1        0  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+               NumDF DenDF F.value elim.num p.value    
+sens1              1  1026    2.24        3    0.13    
+sens2              1   102   54.82        0  <2e-16 ***
+Homesize           1   101    5.16        0    0.03 *  
+sens1:Homesize     1  1025    0.19        1    0.67    
+sens2:Homesize     1   101    1.03        2    0.31    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+            Homesize Estimate Standard Error  DF  t-value Lower CI Upper CI
+Homesize  1        1   4.9062         0.0707 101  69.4200     4.77     5.05
+Homesize  3        2   4.6661         0.0787 101  59.3300     4.51     4.82
+            p-value    
+Homesize  1  <2e-16 ***
+Homesize  3  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Preference ~ sens2 + Homesize + (1 | Consumer) + 
+    (sens2 + 0 | Consumer), data = data)
+> 
+> 
+> 
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("ham")
+> ### * ham
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ham
+> ### Title: Conjoint study of dry cured ham
+> ### Aliases: ham
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> 
+> data(ham)
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> library(MixMod)
+> 
+> m<-lmer(Informed.liking ~ Product*Information*Kjonn + (1|Product:Consumer) + 
++ (1|Information:Consumer) + (1|Consumer), data=ham)
+> 
+> #anova table with p-values
+> anovaTAB(m, ham)
+Warning in mer_finalize(ans) : singular convergence (7)
+Analysis of Variance Table:
+                          NumDF DenDF F.value p.value  
+Product                       3   237    3.82    0.01 *
+Information                   1    79    3.29    0.07 .
+Kjonn                         1    79    0.88    0.35  
+Product:Information           3   237    2.22    0.09 .
+Product:Kjonn                 3   237    0.35    0.79  
+Information:Kjonn             1    79    0.72    0.40  
+Product:Information:Kjonn     3   237    1.27    0.28  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> # total analysis with reduction of both random and fixed parts
+> totalAnalysis(m, ham, isRandReduce=TRUE, isFixReduce=TRUE)
+Warning in mer_finalize(ans) : singular convergence (7)
+Call:
+lmer(formula = Informed.liking ~ Product + Information + Kjonn + 
+    (1 | Product:Consumer) + (1 | Information:Consumer) + (1 | 
+    Consumer) + Product:Information + Product:Kjonn + Information:Kjonn + 
+    Product:Information:Kjonn, data = data)
+
+Random effects:
+                           Chi.sq Chi.DF elim.num p.value    
+(1 | Product:Consumer)     197.36      1        0  <2e-16 ***
+(1 | Information:Consumer)   1.56      1        1    0.21    
+(1 | Consumer)               3.09      1        2    0.08 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+                          NumDF DenDF F.value elim.num p.value  
+Product                       3   320    3.50        0    0.02 *
+Information                   1   323    3.87        6    0.05 *
+Kjonn                         1   319    1.11        4    0.29  
+Product:Information           3   320    2.08        5    0.10  
+Product:Kjonn                 3   316    0.32        2    0.81  
+Information:Kjonn             1   319    0.84        3    0.36  
+Product:Information:Kjonn     3   316    1.20        1    0.31  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+           Product Estimate Standard Error  DF t-value Lower CI Upper CI
+Product  1       1    5.809          0.232 320  25.010     5.35     6.27
+Product  2       2    5.105          0.232 320  21.980     4.65     5.56
+Product  3       3    6.093          0.232 320  26.230     5.64     6.55
+Product  4       4    5.926          0.232 320  25.510     5.47     6.38
+           p-value    
+Product  1  <2e-16 ***
+Product  2  <2e-16 ***
+Product  3  <2e-16 ***
+Product  4  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Informed.liking ~ Product + (1 | Product:Consumer), 
+    data = data)
+> 
+> 
+> 
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("lsmeansTAB")
+> ### * lsmeansTAB
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: lsmeansTAB
+> ### Title: Calculates Least Squares Means and Confidence Intervals for the
+> ###   factors of a fixed part of mixed effects model of lmer object.
+> ### Aliases: lsmeansTAB
+> 
+> ### ** Examples
+> 
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> data(ham)
+> m1<-lmer(Informed.liking ~ Kjonn*Information +(1|Consumer), data=ham)
+> lsmeansTAB(m1, ham, plot=TRUE, test.effs="Kjonn:Information")
+Least Squares Means table:
+                       Kjonn Information Estimate Standard Error  DF t-value
+Kjonn:Information  1 1     1           1    5.707          0.218 154    26.2
+Kjonn:Information  2 1     2           1    5.556          0.220 154    25.2
+Kjonn:Information  1 2     1           2    6.000          0.218 154    27.6
+Kjonn:Information  2 2     2           2    5.662          0.220 154    25.7
+                       Lower CI Upper CI p-value    
+Kjonn:Information  1 1     5.28     6.14  <2e-16 ***
+Kjonn:Information  2 1     5.12     5.99  <2e-16 ***
+Kjonn:Information  1 2     5.57     6.43  <2e-16 ***
+Kjonn:Information  2 2     5.23     6.10  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> 
+> data(TVbo)
+> m<-lmer(Coloursaturation ~ TVset*Picture + (1|Assessor), data=TVbo)
+> lsmeansTAB(m, TVbo, plot=TRUE)
+Least Squares Means table:
+                     TVset Picture Estimate Standard Error   DF t-value
+TVset  TV1             1.0      NA    7.525          0.233 12.4    32.3
+TVset  TV2             2.0      NA    9.778          0.233 12.4    42.0
+TVset  TV3             3.0      NA    7.475          0.233 12.4    32.1
+Picture  1              NA     1.0    8.175          0.247 15.7    33.1
+Picture  2              NA     2.0    8.121          0.247 15.7    32.8
+Picture  3              NA     3.0    8.069          0.247 15.7    32.6
+Picture  4              NA     4.0    8.673          0.247 15.7    35.1
+TVset:Picture  TV1 1   1.0     1.0    7.144          0.340 49.8    21.0
+TVset:Picture  TV2 1   2.0     1.0    9.825          0.340 49.8    28.9
+TVset:Picture  TV3 1   3.0     1.0    7.556          0.340 49.8    22.2
+TVset:Picture  TV1 2   1.0     2.0    7.312          0.340 49.8    21.5
+TVset:Picture  TV2 2   2.0     2.0    9.669          0.340 49.8    28.4
+TVset:Picture  TV3 2   3.0     2.0    7.381          0.340 49.8    21.7
+TVset:Picture  TV1 3   1.0     3.0    7.456          0.340 49.8    21.9
+TVset:Picture  TV2 3   2.0     3.0    9.150          0.340 49.8    26.9
+TVset:Picture  TV3 3   3.0     3.0    7.600          0.340 49.8    22.3
+TVset:Picture  TV1 4   1.0     4.0    8.188          0.340 49.8    24.1
+TVset:Picture  TV2 4   2.0     4.0   10.469          0.340 49.8    30.8
+TVset:Picture  TV3 4   3.0     4.0    7.362          0.340 49.8    21.6
+                     Lower CI Upper CI p-value    
+TVset  TV1               7.02     8.03  <2e-16 ***
+TVset  TV2               9.27    10.28  <2e-16 ***
+TVset  TV3               6.97     7.98  <2e-16 ***
+Picture  1               7.65     8.70  <2e-16 ***
+Picture  2               7.60     8.65  <2e-16 ***
+Picture  3               7.54     8.59  <2e-16 ***
+Picture  4               8.15     9.20  <2e-16 ***
+TVset:Picture  TV1 1     6.46     7.83  <2e-16 ***
+TVset:Picture  TV2 1     9.14    10.51  <2e-16 ***
+TVset:Picture  TV3 1     6.87     8.24  <2e-16 ***
+TVset:Picture  TV1 2     6.63     8.00  <2e-16 ***
+TVset:Picture  TV2 2     8.99    10.35  <2e-16 ***
+TVset:Picture  TV3 2     6.70     8.06  <2e-16 ***
+TVset:Picture  TV1 3     6.77     8.14  <2e-16 ***
+TVset:Picture  TV2 3     8.47     9.83  <2e-16 ***
+TVset:Picture  TV3 3     6.92     8.28  <2e-16 ***
+TVset:Picture  TV1 4     7.50     8.87  <2e-16 ***
+TVset:Picture  TV2 4     9.79    11.15  <2e-16 ***
+TVset:Picture  TV3 4     6.68     8.05  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> lsmeansTAB(m, TVbo, test.effs="TVset")
+Least Squares Means table:
+           TVset Picture Estimate Standard Error   DF t-value Lower CI Upper CI
+TVset  TV1   1.0      NA    7.525          0.233 12.4    32.3     7.02     8.03
+TVset  TV2   2.0      NA    9.778          0.233 12.4    42.0     9.27    10.28
+TVset  TV3   3.0      NA    7.475          0.233 12.4    32.1     6.97     7.98
+           p-value    
+TVset  TV1  <2e-16 ***
+TVset  TV2  <2e-16 ***
+TVset  TV3  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+> 
+> 
+> 
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("randTAB")
+> ### * randTAB
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: randTAB
+> ### Title: Performs Chi square test on random effects of linear mixed
+> ###   effects model.
+> ### Aliases: randTAB
+> 
+> ### ** Examples
+> 
+> options(contrasts=c(unordered="contr.SAS", ordered="contr.poly"))
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> data(carrots)
+> 
+> #lmer model with correlation between intercept and slopes
+> #in the random part
+> m<-lmer(Preference~sens1+sens2+Homesize+Homesize:sens1+(1+sens2+sens1|Consumer), data=carrots)
+> 
+> # table with  p-values for the random effects
+> randTAB(m, carrots)
+Analysis of Random effects Table:
+                               Chi.sq Chi.DF elim.num p.value
+(1 + sens2 + sens1 | Consumer)  0.933      2        0     0.6
+> 
+> 
+> 
+> options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
+> cleanEx()
+
+detaching 'package:lme4', 'package:Matrix', 'package:lattice'
+
+> nameEx("totalAnalysis")
+> ### * totalAnalysis
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: totalAnalysis
+> ### Title: Performs complete analysis of linear mixed effects model:
+> ### Aliases: totalAnalysis
+> 
+> ### ** Examples
+> 
+> 
+> library(lme4)
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+The following object(s) are masked from 'package:base':
+
+    det
+
+
+Attaching package: 'lme4'
+
+The following object(s) are masked from 'package:stats':
+
+    AIC, BIC
+
+> data(carrots)
+> 
+> #construction of lmer model, 
+> #with correlation between slope and
+> #intercept
+> m2<-lmer(Preference~sens2+sens1 + BITTER + Homesize + Age+sens1:Homesize
++ + sens2:Homesize + sens2:sens1 + Homesize:Age+sens2:Homesize:Age
++ + sens1:Homesize:Age + (1+sens2|Consumer), data=carrots)
+> 
+> 
+> #reduction only of the random part
+> totalAnalysis(m2, carrots, isRandReduce=TRUE, isFixReduce=FALSE, plot=TRUE)
+Call:
+lmer(formula = Preference ~ sens2 + sens1 + BITTER + Homesize + 
+    Age + (1 + sens2 | Consumer) + sens1:Homesize + sens2:Homesize + 
+    sens2:sens1 + Homesize:Age + sens2:Homesize:Age + sens1:Homesize:Age, 
+    data = data)
+
+Random effects:
+                              Chi.sq Chi.DF elim.num p.value    
+(1 + sens2 | Consumer)         0.202      1        1     0.7    
+      (sens2 + 0 | Consumer)   0.750      1        2     0.4    
+      (1 | Consumer)         110.494      1        0  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Fixed effects:
+                    NumDF  DenDF F.value p.value    
+sens2                 1.0 1105.8   63.88  <2e-16 ***
+sens1                 1.0 1107.4    6.55    0.01 *  
+BITTER                6.0 1175.4   64.62  <2e-16 ***
+Homesize              1.0   93.2    1.07    0.30    
+Age                   3.0   93.6    0.36    0.78    
+sens1:Homesize        1.0 1108.8    0.00    0.99    
+sens2:Homesize        1.0 1106.1    1.44    0.23    
+sens2:sens1           1.0 1107.3    4.35    0.04 *  
+Homesize:Age          3.0   93.2    0.84    0.48    
+sens2:Homesize:Age    6.0 1106.1    1.02    0.41    
+sens1:Homesize:Age    6.0 1106.3    0.92    0.48    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Least squares means:
+                  BITTER Homesize  Age Estimate Standard Error   DF t-value
+BITTER  1              1       NA   NA   5.3391         0.0842  194   63.40
+BITTER  2              2       NA   NA   5.0464         0.0771  153   65.42
+BITTER  3              3       NA   NA   4.4996         0.0880  241   51.13
+BITTER  4              4       NA   NA   4.0982         0.1165  570   35.17
+BITTER  5              5       NA   NA   3.4750         0.1289  694   26.97
+BITTER  6              6       NA   NA   2.9638         0.2230 1173   13.29
+BITTER  7              7       NA   NA   0.5284         0.6868 1162    0.77
+Homesize  1           NA        1   NA   3.7770         0.1449  297   26.07
+Homesize  3           NA        2   NA   3.6374         0.1331  457   27.32
+Age  1                NA       NA    1   3.6765         0.1962  145   18.74
+Age  2                NA       NA    2   3.7684         0.1826  199   20.64
+Age  3                NA       NA    3   3.6339         0.1289  576   28.20
+Age  4                NA       NA    4   3.7499         0.1601  267   23.42
+Homesize:Age  1 1     NA        1    1   3.6232         0.3091  107   11.72
+Homesize:Age  3 1     NA        2    1   3.7298         0.2067  149   18.04
+Homesize:Age  1 2     NA        1    2   3.9683         0.2792  125   14.22
+Homesize:Age  3 2     NA        2    2   3.5686         0.1823  198   19.58
+Homesize:Age  1 3     NA        1    3   3.7810         0.1414  390   26.73
+Homesize:Age  3 3     NA        2    3   3.4869         0.1560  280   22.35
+Homesize:Age  1 4     NA        1    4   3.7354         0.1562  281   23.91
+Homesize:Age  3 4     NA        2    4   3.7645         0.2361  143   15.94
+                  Lower CI Upper CI p-value    
+BITTER  1            5.173     5.51  <2e-16 ***
+BITTER  2            4.894     5.20  <2e-16 ***
+BITTER  3            4.326     4.67  <2e-16 ***
+BITTER  4            3.869     4.33  <2e-16 ***
+BITTER  5            3.222     3.73  <2e-16 ***
+BITTER  6            2.526     3.40  <2e-16 ***
+BITTER  7           -0.819     1.88     0.4    
+Homesize  1          3.492     4.06  <2e-16 ***
+Homesize  3          3.376     3.90  <2e-16 ***
+Age  1               3.289     4.06  <2e-16 ***
+Age  2               3.408     4.13  <2e-16 ***
+Age  3               3.381     3.89  <2e-16 ***
+Age  4               3.435     4.07  <2e-16 ***
+Homesize:Age  1 1    3.010     4.24  <2e-16 ***
+Homesize:Age  3 1    3.321     4.14  <2e-16 ***
+Homesize:Age  1 2    3.416     4.52  <2e-16 ***
+Homesize:Age  3 2    3.209     3.93  <2e-16 ***
+Homesize:Age  1 3    3.503     4.06  <2e-16 ***
+Homesize:Age  3 3    3.180     3.79  <2e-16 ***
+Homesize:Age  1 4    3.428     4.04  <2e-16 ***
+Homesize:Age  3 4    3.298     4.23  <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Final model:
+lmer(formula = Preference ~ sens2 + sens1 + BITTER + Homesize + 
+    Age + (1 | Consumer) + sens1:Homesize + sens2:Homesize + 
+    sens2:sens1 + Homesize:Age + sens2:Homesize:Age + sens1:Homesize:Age, 
+    data = data)
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  62.02 0.41 63.75 NA NA 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

@@ -1,0 +1,19 @@
+import(numDeriv)
+import(Matrix)
+import(nlme)
+import(lme4)
+import(MASS)
+import(Hmisc)
+
+
+
+export(anovaTAB)
+export(randTAB)
+export(lsmeansTAB)
+export(totalAnalysis)
+
+
+S3method(print, totalAnalysis)
+S3method(print, randTAB)
+S3method(print, lsmeansTAB)
+S3method(print, anovaTAB)
